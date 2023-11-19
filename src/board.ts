@@ -14,7 +14,9 @@ export type Board<T> = {
    readonly width: number
    readonly height: number
    readonly generator: Generator<T>
-    positions: any[]
+   board: T[][]
+//pieces: T[]
+ //  positionsArray: Position[]
 };
 
 export type Effect<T> = {};
@@ -25,37 +27,60 @@ export type MoveResult<T> = {
 }    
 
 export function create<T>(generator: Generator<T>, width: number, height: number): Board<T> {      
-    const board: Board<T> = ({width: width, height: height, generator:generator, positions:[]})
-    positions(board);
-    return board; 
+    const Board: Board<T> = ({
+        width: width, 
+        height: height, 
+        generator:generator, 
+        board: []
+       // positionsArray: []
+    })
+
+   // this.positions = positions(Board)
+   this.board = generate(Board, generator)
+//console.log(this.board)
+    return Board; 
 }    
 
-export function positions(board: Board<T>) {
-    let array: Position[] = [];
+export function generate<T>(Board: Board<T>, generator: Generator<T>)
+{
+    let array = [];
+
+    for (let i = 0; i < Board.height; i++) {
+        let row = [];
+        for (let j = 0; j < Board.width; j++) {
+            row.push(generator.next());
+        }
+        array.push(row);
+    }
+
+    return array;
+}
+
+export function positions<T>(board: Board<T>): Position[] {
+    let array = [];
 
     for (let i = 0; i < board.height; i++) {
         for (let j = 0; j < board.width; j++) {
-            array.push({ row: i, col: j })
+            array.push({row: i, col: j});
         }
-    };
+    }
 
-    board.positions = array; 
-
-    return board.positions
+    return array
 }
 
-export function piece<T>(board: Board<T>, p: Position): T | undefined {
-    let returnValue = undefined;
+export function piece<T>(board: [][], p: Position): T | undefined {
 
-    board.positions.forEach(element => {
-        const value = board.generator.next();
 
-        if (element.row === p.row && element.col === p.col) {
-            returnValue = <T> value
-        }
-    });
-    
-    return returnValue
+    if (p.row < 0 || p.col < 0) {
+        return undefined;
+    }
+
+    if (p.row < board.height && p.col < board.width) {
+        return board[p.row][p.col]
+        //return board.board[p.row][p.col];
+    }
+
+    return undefined;
 }    
 
 export function canMove<T>(board: Board<T>, first: Position, second: Position): boolean {

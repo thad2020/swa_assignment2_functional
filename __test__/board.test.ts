@@ -85,8 +85,8 @@ describe("Board", () => {
             const positions = [{row: 0, col: 0}, {row: 0, col: 1}, 
                                {row: 1, col: 0}, {row: 1, col: 1},
                                {row: 2, col: 0}, {row: 2, col: 1}]
-            //console.table(positions);
-            //console.table(Board.positions(board))
+            
+           // console.table(Board.positions(board))
             expect(Board.positions(board)).toEqual(positions)
         })
 
